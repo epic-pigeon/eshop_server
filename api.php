@@ -40,7 +40,7 @@ $operations = [
     "get_count" => function ($dbc, $query) {
         if ($query['table']) {
             $result = mysqli_query($dbc, "SELECT COUNT(*) FROM `" . $query['table'] . "`");
-            if ($result !== false) return (int) $result; else throw new MySQLException(mysqli_error($dbc));
+            if ($result) return mysqli_fetch_array($result)[0]; else throw new MySQLException(mysqli_error($dbc));
         } else throw new BadArgumentsException(["table"]);
     }
 ];
