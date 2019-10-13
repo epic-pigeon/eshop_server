@@ -50,10 +50,14 @@ if (isset($_REQUEST["operation"])) {
         $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
         try {
             if (!$link) throw new MySQLException("Could not connect to the database");
-            $operation(
+            $result = $operation(
                 $link,
                 $_REQUEST
             );
+            echo json_encode([
+                "success" => true,
+                "result" => $result
+            ]);
         } catch (Exception $e) {
             echo exceptionToJSON($e);
         }
