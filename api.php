@@ -48,9 +48,14 @@ $operations = [
 if (isset($_REQUEST["operation"])) {
     if ($operation = $operations[$_REQUEST["operation"]]) {
         $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
-        $operation(
-            $link,
-            $_REQUEST
-        );
+        try {
+            if (!$link) throw new MySQLException("Could not connect to the database");
+            $operation(
+                $link,
+                $_REQUEST
+            );
+        } catch (Exception $e) {
+            echo exceptionToJSON($e);
+        }
     } else echo '{"success":false,"code":1,"message":"Operation ' . $_REQUEST["operation"] . ' does not exist"}';
 } else echo '{"success":false,"code":1,"message":"Operation not specified"}';
