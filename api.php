@@ -36,11 +36,30 @@ function exceptionToJSON(Exception $exception) {
     return json_encode($result);
 }
 
+function arrFromMysqliResult($mysqli_result) {
+    $result = [];
+    while (($arr = mysqli_fetch_array($mysqli_result)) != null) {
+        array_push($result, $arr);
+    }
+    return $result;
+}
+
 $operations = [
     "get_count" => function ($dbc, $query) {
         if ($query['table']) {
             $result = mysqli_query($dbc, "SELECT COUNT(*) FROM `" . $query['table'] . "`");
             if ($result) return (int) mysqli_fetch_array($result)[0]; else throw new MySQLException(mysqli_error($dbc));
+        } else throw new BadArgumentsException(["table"]);
+    },
+    "get" => function ($dbc, $query) {
+        if ($query['table']) {
+            $count = $query["count"];
+            $offset = $query["offset"];
+            $query = "SELECT * FROM `" . $query['table'] . "` ";
+            if ($count !== null) $query .= "LIMIT " . $count . " ";
+            if ($offset !== null) $query .= "OFFSET " . $offset . " ";
+            $result = mysqli_query($dbc, $query);
+            if ($result) return arrFromMysqliResult($result); else throw new MySQLException(mysqli_error($dbc));
         } else throw new BadArgumentsException(["table"]);
     }
 ];
