@@ -1,5 +1,7 @@
 <?php
 
+header('Access-Control-Allow-Origin: *');
+
 define("MYSQLI_ERROR_CODE", 0);
 define("BAD_ARGUMENTS_ERROR_CODE", 1);
 define("UNKNOWN_ERROR_CODE", 2);
